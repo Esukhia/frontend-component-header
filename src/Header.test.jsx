@@ -9,9 +9,8 @@ import {
 import Header from './index';
 import { FALLBACK_LANGUAGE_CODES } from './site-header/languages';
 
-// Mocked to assert *what SiteHeader receives*, without needing a real footer
-// element or scroll behavior in jsdom - the hook's own logic is covered by
-// useReleaseNearFooter's own tests, this file only owns the prop threading.
+// Mocked so we can assert what SiteHeader receives; the hook's own logic is tested
+// separately.
 jest.mock('./site-header/useReleaseNearFooter', () => jest.fn(() => ({ inView: false, instant: false })));
 // eslint-disable-next-line import/first
 import useReleaseNearFooter from './site-header/useReleaseNearFooter';
@@ -141,9 +140,7 @@ describe('<Header />', () => {
   });
 
   describe('language menu', () => {
-    // The list itself comes from the platform's released languages; with no config in
-    // this suite the header falls back to its built-in codes. LanguageOptions.test.jsx
-    // covers the list and the switching in detail.
+    // No config in this suite, so the header falls back to its built-in language codes.
     it('lists every language and marks the active one', async () => {
       renderHeader(null);
 
@@ -159,12 +156,8 @@ describe('<Header />', () => {
   });
 
   describe('footerSelector', () => {
-    // Guards the exact regression an earlier round of fixes introduced without
-    // a test: SiteHeader/useReleaseNearFooter support a footerSelector prop
-    // for pointing the header at the right footer, but if Header itself ever
-    // stops threading it through, no error is thrown - the header just
-    // silently falls back to matching the first <footer> on the page. These
-    // assert the wiring itself, not just that nothing crashes.
+    // Guards a past regression: if Header stops threading footerSelector through,
+    // nothing throws - it just silently falls back to the first <footer> on the page.
     it('passes a custom footerSelector all the way through to the hook', async () => {
       renderHeader(null, { footerSelector: 'footer.the-real-one' });
 
@@ -176,12 +169,8 @@ describe('<Header />', () => {
       renderHeader(null);
 
       await screen.findByRole('banner');
-      // SiteHeader's own default ('footer') must be what actually reaches the
-      // hook. Header building its props object with an explicit
-      // `footerSelector: null` would silently defeat that default - React
-      // only falls back to a component's defaultProps for a genuinely
-      // `undefined` prop, not `null` - so this is the one assertion standing
-      // between that mistake and it going unnoticed again.
+      // Must be SiteHeader's own 'footer' default, not an explicit null from Header -
+      // React only applies defaultProps to a genuinely undefined prop.
       expect(useReleaseNearFooter).toHaveBeenCalledWith('footer');
       expect(useReleaseNearFooter).not.toHaveBeenCalledWith(null);
     });

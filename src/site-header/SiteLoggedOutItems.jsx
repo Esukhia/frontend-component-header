@@ -2,15 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * The sign in and register buttons shown on wide screens. Register is the outlined
- * button and sign in the filled one. The `variant` hint decides which; without it,
- * among two or more items the last one is treated as the primary action, which is
- * how the older header ordered these too. A single item with no `variant` is never
- * inferred as primary this way - "last of the list" and "the only item" are the
- * same position, so that rule can't tell them apart, and defaulting a lone item to
- * the quieter, outlined style is the safer guess when the caller hasn't said. There
- * is no position-based rule that gets a lone item right in every case, so
- * `itemsWithVariantWarning` below flags it instead of silently picking one.
+ * Sign-in (filled) and register (outlined) buttons for wide screens. `variant`
+ * picks which is which; without it, the last of 2+ items is treated as sign-in.
+ * A lone item can't be inferred this way, so it defaults to outlined and
+ * `itemsWithVariantWarning` below warns callers to set `variant` explicitly.
  */
 const SiteLoggedOutItems = ({ items }) => items.map((item, index) => {
   const isPrimary = item.variant
@@ -36,12 +31,8 @@ const itemsArrayShape = PropTypes.arrayOf(PropTypes.shape({
 }));
 
 /**
- * Wraps the shape check above with one more: a single item with no `variant`
- * can't be styled correctly by the position-based fallback (see the component
- * doc comment), so callers should set `variant` explicitly whenever they only
- * supply one item. A custom validator rather than a runtime check in the
- * component itself, so it's a development-time warning - deduplicated the
- * same way any other PropTypes failure is - not console noise on every render.
+ * Extends the shape check with a dev-time warning when a single item omits
+ * `variant`, since the position-based fallback can't infer it correctly.
  */
 const itemsWithVariantWarning = (props, propName, componentName, ...rest) => {
   const shapeError = itemsArrayShape(props, propName, componentName, ...rest);

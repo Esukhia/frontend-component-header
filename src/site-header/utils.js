@@ -7,13 +7,9 @@ import { FALLBACK_LANGUAGE_CODES, NATIVE_LANGUAGE_NAMES } from './languages';
 const STARTS_WITH_LATIN = /^[A-Za-zÀ-ɏ]/;
 
 /**
- * Initials for the profile avatar.
- *
- * Returns null when there is nothing sensible to show, which is the caller's cue
- * to fall back to a generic person icon. That happens for names written in a
- * script where a single glyph does not read as an initial - Tibetan and Chinese
- * among them - and when neither a name nor a username is available.
- *
+ * Initials for the profile avatar. Returns null (caller falls back to a generic
+ * icon) for non-Latin scripts, where a single glyph doesn't read as an initial,
+ * or when there's neither a name nor a username.
  * @param {string} name the account's full name, may be empty
  * @param {string} username the account's username, used when there is no name
  * @returns {string|null} one or two uppercase letters, or null
@@ -42,13 +38,8 @@ const getInitials = (name, username) => {
 export default getInitials;
 
 /**
- * The name to show for a locale the platform released.
- *
- * A language the operator deliberately released has to appear in the menu even when it
- * predates this file, so an unmapped code asks the browser for its endonym before
- * falling back to the bare code. Intl.DisplayNames returns the name in the language
- * being named, which is the same "native name, no gloss" the map provides.
- *
+ * The name to show for a locale the platform released. Falls back to the browser's
+ * Intl.DisplayNames endonym, then the bare code, for a locale not in our map.
  * @param {string} code a lowercase, hyphenated locale code
  * @returns {string} a human-readable name, never empty
  */
@@ -65,21 +56,16 @@ const nativeNameFor = (code) => {
       return endonym;
     }
   } catch (error) {
-    // An unparseable code, or a runtime built without the full ICU data.
+    // Unparseable code, or ICU data missing from this runtime.
   }
 
   return code.toUpperCase();
 };
 
 /**
- * The languages to offer in the header menu.
- *
- * Accepts what the platform's config API sends - either bare codes or
- * `{ code, name }` objects - and keeps its order, which reflects the operator's
- * DarkLangConfig. The API's `name` is deliberately ignored in favour of our own
- * native-name map. An absent or empty list falls back to the built-in codes, so the
- * menu is never empty.
- *
+ * The languages to offer in the header menu. Accepts bare codes or `{ code, name }`
+ * objects from the config API, ignoring any `name` in favor of our native-name map,
+ * and falls back to the built-in codes when the list is empty.
  * @param {Array<string|{code: string}>} configLanguages RELEASED_LANGUAGES, possibly undefined
  * @returns {Array<{code: string, native: string}>}
  */
@@ -96,13 +82,8 @@ export const resolveHeaderLanguages = (configLanguages) => {
 };
 
 /**
- * Which menu row, if any, corresponds to the given locale.
- *
- * The menu's codes carry regions ('es-419', 'zh-cn') while a locale may be bare ('es'),
- * or the other way round, so an exact match is only the first of the ways a locale can
- * belong to a row. Returns null rather than guessing: leaving every row unticked is
- * more honest than telling someone their language is English when it isn't.
- *
+ * Which menu row, if any, corresponds to the given locale. Matches exactly, then
+ * across bare/regional variants; returns null rather than guessing wrong.
  * @param {string} locale the locale to look for
  * @param {Array<{code: string}>} languages the rows on offer
  * @returns {string|null} the matching row's code, or null
@@ -130,13 +111,9 @@ export const matchActiveLanguage = (locale, languages) => {
 };
 
 /**
- * The language the visitor has actually asked for, straight from the cookie.
- *
- * Read here rather than through the platform's getLocale() because that already
- * collapses a locale this app has no translations for down to English - which would
- * un-tick the row the visitor just chose. The cookie is their stated preference and is
- * what this menu edits.
- *
+ * The language the visitor has actually asked for, straight from the cookie. Read
+ * directly rather than via getLocale(), which collapses untranslated locales to
+ * English and would un-tick the row the visitor just chose.
  * @param {string} cookieName LANGUAGE_PREFERENCE_COOKIE_NAME from the app config
  * @returns {string|null} the preferred locale, or null when nothing is stored
  */

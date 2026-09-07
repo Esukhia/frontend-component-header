@@ -64,11 +64,8 @@ class Menu extends React.Component {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
 
-    // Handed to descendants so a menu item can dismiss the menu it sits in without the
-    // components in between having to know a menu is there at all. Built once, so
-    // consumers do not re-render on every render of this one. onCloseClick rather than
-    // close: it returns focus to the trigger first, which a keyboard user needs when the
-    // content they were in is about to unmount.
+    // Lets descendants close the menu without knowing it's there. Uses onCloseClick
+    // (not close) so focus returns to the trigger before the content unmounts.
     this.contextValue = { close: this.onCloseClick };
   }
 

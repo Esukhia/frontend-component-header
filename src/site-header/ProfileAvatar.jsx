@@ -4,16 +4,11 @@ import PropTypes from 'prop-types';
 import { UserIcon } from './icons';
 
 /**
- * Contents of a profile avatar - the caller supplies the circular container, so
- * this renders in both the header's trigger button and the dropdown's identity row.
- *
- * Preference order is the account's photo, then their initials, then a generic
- * person icon. The icon covers accounts with no usable initials, which includes
- * names written in a script where one glyph does not read as an initial.
+ * Avatar contents (photo, then initials, then a generic icon) for the header
+ * trigger and the dropdown identity row; the caller supplies the container.
  */
 const ProfileAvatar = ({ src, initials, loading }) => {
-  // Render nothing while the photo request is in flight, so initials do not flash
-  // in and then get replaced by the picture.
+  // Avoid flashing initials before the photo loads.
   if (loading) {
     return null;
   }

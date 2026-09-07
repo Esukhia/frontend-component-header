@@ -1,12 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import useReleaseNearFooter from './useReleaseNearFooter';
 
-/**
- * A minimal ResizeObserver stub: jsdom doesn't implement one at all, and the
- * hook only needs `observe`/`disconnect` to exist and the constructor's
- * callback to be reachable so a test can invoke it directly to simulate a
- * resize.
- */
+/** Minimal ResizeObserver stub (jsdom has none); exposes the callback so tests can trigger it. */
 class MockResizeObserver {
   constructor(callback) {
     this.callback = callback;
@@ -32,8 +27,7 @@ describe('useReleaseNearFooter', () => {
     footer = document.createElement('footer');
     document.body.appendChild(footer);
 
-    // Below the fold to start: the common case (a normal page load) shouldn't
-    // release the header before anything has happened.
+    // Below the fold to start, the common case on page load.
     jest.spyOn(footer, 'getBoundingClientRect').mockReturnValue({ top: 2000 });
     Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
   });
@@ -66,7 +60,7 @@ describe('useReleaseNearFooter', () => {
       jest.runOnlyPendingTimers();
     });
 
-    // Still nothing the visitor did - a body resize alone doesn't count.
+    // A body resize alone isn't a visitor action.
     expect(result.current.inView).toBe(true);
     expect(result.current.instant).toBe(true);
   });
@@ -81,8 +75,7 @@ describe('useReleaseNearFooter', () => {
     });
     expect(result.current.instant).toBe(false);
 
-    // And it stays that way for later readings too, including ones a body
-    // resize triggers - the visitor has already been seen scrolling once.
+    // Stays non-instant for later readings too, since a scroll was already seen.
     footer.getBoundingClientRect.mockReturnValue({ top: 400 });
     act(() => {
       MockResizeObserver.instances[0].callback();
@@ -93,15 +86,12 @@ describe('useReleaseNearFooter', () => {
   });
 
   it('recomputes on a body resize with no scroll or resize event - the loading-spinner-to-real-content case', () => {
-    // Starts short: exactly the state a page is in while a loading spinner is
-    // still showing, before the real (taller) content has replaced it.
+    // Starts short, as while a loading spinner is showing before real content replaces it.
     footer.getBoundingClientRect.mockReturnValue({ top: 400 });
     const { result } = renderHook(() => useReleaseNearFooter());
     expect(result.current.inView).toBe(true);
 
-    // The real content arrives, pushing the footer below the fold - but
-    // nothing here is a scroll, a resize, or the footer itself being added or
-    // removed, so only the ResizeObserver on the body has any way to notice.
+    // Real content pushes the footer down; only the body ResizeObserver can notice this.
     footer.getBoundingClientRect.mockReturnValue({ top: 2000 });
     act(() => {
       MockResizeObserver.instances[0].callback();
@@ -109,7 +99,7 @@ describe('useReleaseNearFooter', () => {
     });
 
     expect(result.current.inView).toBe(false);
-    // And this correction is exactly the case that must not animate.
+    // This correction must not animate.
     expect(result.current.instant).toBe(true);
   });
 

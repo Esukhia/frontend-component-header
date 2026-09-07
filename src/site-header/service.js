@@ -2,17 +2,8 @@ import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 /**
- * Ask the LMS to serve this language from now on.
- *
- * This is what actually writes the shared language cookie every Open edX app reads, so
- * it is the call that decides the outcome. It works signed out as well as in: `isPublic`
- * stops the JWT interceptor from trying to refresh a token that isn't there, while the
- * CSRF interceptor - which this POST does need - still runs.
- *
- * getAuthenticatedHttpClient is required even for anonymous visitors; getHttpClient is a
- * bare axios instance with neither the CSRF interceptor nor withCredentials, so the
- * request would be rejected.
- *
+ * Writes the shared language cookie every Open edX app reads. `isPublic` lets this work
+ * signed out (skips the JWT refresh) while still running the required CSRF interceptor.
  * @param {string} code the locale to switch to
  * @returns {Promise}
  */
@@ -34,11 +25,8 @@ export const postSetLang = (code) => {
 };
 
 /**
- * Record the choice against the account, so it follows the learner to other browsers.
- *
- * Only meaningful when signed in, and only a convenience: the language of the session
- * in front of us is settled by postSetLang, not by this.
- *
+ * Records the language preference on the account so it follows the learner to other
+ * browsers; the current session's language is set by postSetLang, not this.
  * @param {string} username the signed-in user
  * @param {string} code the locale to store
  * @returns {Promise}

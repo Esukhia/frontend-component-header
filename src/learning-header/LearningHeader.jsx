@@ -18,18 +18,9 @@ import UserbackWidget from '../UserbackWidget';
 import messages from './messages';
 
 /**
- * The course player's header.
- *
- * Shares its shell and its controls with the site header - see `SiteHeader` in
- * `../site-header/` - so the locale button, the avatar and the account menu look
- * and behave identically in both, including the collapse into a burger below
- * the breakpoint. What differs is what stands beside the logo: the course
- * title here, navigation links there - so the burger has no nav-link rows of
- * its own to show, only the language list, the account rows and, when
- * configured, a Help row.
- *
- * Styling comes entirely from `@edx/brand/paragon/header`, which an application
- * has to import for this markup to look right.
+ * The course player's header. Shares its shell and controls with `SiteHeader`
+ * (`../site-header/`); only the course title differs from the nav links there.
+ * Styling comes from `@edx/brand/paragon/header`, which an app must import.
  */
 const LearningHeader = ({
   courseOrg, courseNumber, courseTitle, intl, showUserDropdown,
@@ -40,24 +31,16 @@ const LearningHeader = ({
 
   const loggedIn = authenticatedUser !== null;
 
-  // The burger's only nav-link-shaped row: Help, when there's somewhere for it
-  // to go and someone signed in to see it - the same condition the wide
-  // layout's LearningHelpSlot is shown under. Read locally rather than through
-  // the slot: the burger's other rows (nav links on the site header, this
-  // header's own Help row) aren't individually slotted either, only the whole
-  // menu is.
+  // Help row for the burger menu, shown under the same condition as the wide
+  // layout's LearningHelpSlot.
   const supportUrl = getConfig().SUPPORT_URL;
   const helpNavItems = (loggedIn && supportUrl) ? [{
     content: intl.formatMessage(messages.help),
     href: supportUrl,
   }] : [];
 
-  // Two groups rather than one, so the rows are drawn with a separator above sign
-  // out. `iconName` picks the leading glyph for a row: it is a hint, not a
-  // component, so an application supplying its own rows through the slot needs no
-  // import from this package, and an unknown or absent name simply renders no
-  // icon. Sign out is identified by it too, which keeps its distinct styling
-  // working in every language.
+  // Two groups so sign out is drawn with a separator above it. `iconName` is a
+  // hint string (not a component import) so slot consumers don't need this package.
   const userMenu = !loggedIn ? [] : [
     {
       heading: '',
@@ -109,11 +92,7 @@ const LearningHeader = ({
       </a>
 
       <div className="nav-left">
-        {/*
-          The logo keeps its own slot rather than being folded into the site
-          header's brand lockup, so an application can still replace it. `Logo`
-          spreads its extra attributes after its own class, so this one wins.
-        */}
+        {/* Own slot so an application can still replace the logo. */}
         <LogoSlot
           href={`${getConfig().LMS_BASE_URL}`}
           src={getConfig().LOGO_URL}
@@ -144,11 +123,7 @@ const LearningHeader = ({
           ) : (
             <AnonymousUserMenu />
           )}
-          {/*
-            Last, not first: below the collapse breakpoint everything else in
-            this row is display:none, so the burger ends up the only visible
-            control - on the right, where .nav-actions already sits.
-          */}
+          {/* Last, not first: below the breakpoint it's the only visible control. */}
           <MobileNavMenu
             navItems={helpNavItems}
             userMenu={userMenu}

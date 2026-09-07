@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * Shared wrapper for the header's line glyphs. They all share a 24x24 viewBox and
- * are stroked in currentColor so the surrounding CSS controls their colour.
- */
+/** Shared 24x24 stroke wrapper for the header's line glyphs; currentColor lets CSS set the color. */
 const Glyph = ({
   size, strokeWidth, children, ...attributes
 }) => (
@@ -117,11 +114,7 @@ export const SignInIcon = (props) => (
   </Glyph>
 );
 
-/**
- * Menu items carry an `iconName` hint rather than a component, so the apps that
- * supply menu items do not have to import from this package. An unknown or absent
- * name simply renders no icon.
- */
+/** Maps menu items' `iconName` hint to a component, so callers don't need to import icons directly. */
 export const NAV_ICONS = {
   dashboard: GridIcon,
   discover: CompassIcon,

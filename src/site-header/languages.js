@@ -1,14 +1,7 @@
 /**
- * Native names for the locales the platform can serve.
- *
- * Each language reads in its own script with no English gloss, so the menu looks the
- * same to every visitor regardless of the interface language. The platform's own names
- * (from `settings.LANGUAGES`) carry glosses - "བོད་ཡིག (Tibetan)" - which is why the
- * header maps codes itself rather than displaying what the API sends.
- *
- * Codes are lowercase and hyphenated, matching what the LMS emits. Regional variants are
- * listed in their own right: 'zh-cn' and 'zh-tw' are not the same name, so deriving the
- * label by stripping the region would be wrong.
+ * Native names for the locales the platform can serve, keyed by lowercase hyphenated
+ * code. Names are shown in their own script with no English gloss, unlike the
+ * platform's `settings.LANGUAGES` values.
  */
 export const NATIVE_LANGUAGE_NAMES = {
   ar: 'العربية',
@@ -55,10 +48,7 @@ export const NATIVE_LANGUAGE_NAMES = {
   'zh-tw': '中文 (繁體)',
 };
 
-/**
- * Shown when the platform hasn't told us which languages are released - an older LMS, or
- * a config request that failed. Better a slightly stale menu than no menu at all.
- */
+/** Fallback when the platform hasn't told us which languages are released. */
 export const FALLBACK_LANGUAGE_CODES = [
   'en',
   'bo',

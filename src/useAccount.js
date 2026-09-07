@@ -2,15 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '@edx/frontend-platform/react';
 
 /**
- * The signed-in account's photo, name and email.
- *
- * One request covers all three, because every header that wants any of them wants
- * the rest: the bar shows the photo (or initials derived from the name), and the
- * account menu shows the name and email together beneath it.
- *
- * Reads `authenticatedUser` and the config from AppContext itself rather than
- * taking them as arguments, the way `useLanguageSelection` does - a header only
- * ever wants this for the visitor who is actually signed in.
+ * The signed-in account's photo, name and email, fetched in one request since
+ * every header that wants one wants the rest.
  *
  * @returns {{loading: boolean, avatar: ?string, name: ?string, email: ?string}}
  */
@@ -22,20 +15,27 @@ const useAccount = () => {
   });
 
   useEffect(() => {
+    // Prevents a stale response from overwriting state after a newer run.
+    let ignore = false;
+
     const fetchAccount = async () => {
       // If the user is logged out, we are not loading, and there is nothing to show.
       if (authenticatedUser === null) {
-        setAccount({
-          loading: false, avatar: null, name: null, email: null,
-        });
+        if (!ignore) {
+          setAccount({
+            loading: false, avatar: null, name: null, email: null,
+          });
+        }
         return;
       }
 
       // If we don't have a username yet, remain in the loading state.
       if (!authenticatedUser?.username) {
-        setAccount({
-          loading: true, avatar: null, name: null, email: null,
-        });
+        if (!ignore) {
+          setAccount({
+            loading: true, avatar: null, name: null, email: null,
+          });
+        }
         return;
       }
 
@@ -46,6 +46,10 @@ const useAccount = () => {
           credentials: 'include',
           headers: { Accept: 'application/json' },
         });
+
+        if (ignore) {
+          return;
+        }
 
         if (response.ok) {
           const data = await response.json();
@@ -68,13 +72,19 @@ const useAccount = () => {
           });
         }
       } catch (error) {
-        setAccount({
-          loading: false, avatar: null, name: null, email: null,
-        });
+        if (!ignore) {
+          setAccount({
+            loading: false, avatar: null, name: null, email: null,
+          });
+        }
       }
     };
 
     fetchAccount();
+
+    return () => {
+      ignore = true;
+    };
   }, [authenticatedUser, config.LMS_BASE_URL]);
 
   return account;

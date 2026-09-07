@@ -12,9 +12,8 @@ import {
 import { LearningHeader as Header } from '../index';
 
 /**
- * Renders as a signed-out visitor. The shared `render` helper always provides the
- * mock authenticated user, so the logged-out half of the header needs its own
- * AppContext rather than that helper.
+ * Renders as a signed-out visitor, since the shared `render` helper always
+ * provides a mock authenticated user.
  */
 const renderLoggedOut = (ui) => {
   const context = { authenticatedUser: null, config: getConfig() };
@@ -36,8 +35,7 @@ describe('Header', () => {
   });
 
   beforeEach(() => {
-    // The account fetch behind the avatar. Answered here so no test depends on a
-    // real request, and so the name and email reach the identity block.
+    // Mocks the account fetch behind the avatar so no test needs a real request.
     global.fetch = jest.fn(() => Promise.resolve({
       ok: true,
       json: () => Promise.resolve({
@@ -50,8 +48,7 @@ describe('Header', () => {
 
   it('displays the account menu trigger', async () => {
     render(<Header />);
-    // The username labels the avatar button; it is no longer visible text in the
-    // bar itself, so the accessible name is what identifies it.
+    // The username is the avatar button's accessible name, not visible text.
     expect(await screen.findByRole('button', { name: new RegExp(authenticatedUser.username) }))
       .toBeInTheDocument();
   });

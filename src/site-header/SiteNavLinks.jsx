@@ -2,11 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * One row of top-level navigation links. This is the default content of both the
- * main and the secondary menu slots: the design renders them into a single
- * `nav-links` row, so the two slots sit next to each other rather than in
- * separate bars. Both render as fragments, so the row stays one flat list of
- * anchors either way.
+ * One row of top-level nav links; default content for both the main and
+ * secondary menu slots, which render side by side in a single `nav-links` row.
  */
 const SiteNavLinks = ({ menu }) => {
   // Consumers may hand us a ready-made node instead of a list of items.

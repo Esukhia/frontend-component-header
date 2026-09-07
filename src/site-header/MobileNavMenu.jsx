@@ -14,15 +14,9 @@ import getInitials from './utils';
 import messages from '../Header.messages';
 
 /**
- * The burger button and the single menu that replaces the whole right-hand side
- * below the collapse breakpoint: navigation links, then the language list, then
- * the account rows. One merged menu rather than the two separate ones the old
- * mobile header used.
- *
- * `renderItems` overrides how the logged-in rows are drawn, the same escape
- * hatch `ProfileMenu` offers for the wide layout - the learning header uses
- * both to route its account rows through its own plugin slot at every width.
- * A caller that passes nothing gets the default rows.
+ * Burger button and single merged menu (nav links, language list, account rows)
+ * that replaces the right-hand side on narrow screens. `renderItems` optionally
+ * overrides how logged-in rows render, mirroring `ProfileMenu`'s escape hatch.
  */
 const MobileNavMenu = ({
   navItems, userMenu, loggedOutItems, loggedIn, avatar, avatarLoading, username, name, email,
