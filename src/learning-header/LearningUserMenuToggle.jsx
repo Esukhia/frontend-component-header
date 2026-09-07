@@ -1,12 +1,10 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import Avatar from '../Avatar';
 import { CaretIcon } from '../Icons';
 
 const LearningUserMenuToggle = ({
   label,
-  icon,
   avatar,
   loading,
 }) => (

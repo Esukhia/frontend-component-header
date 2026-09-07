@@ -8,11 +8,12 @@ import { Dropdown } from '@openedx/paragon';
 
 import LearningUserMenuToggleSlot from '../plugin-slots/LearningUserMenuToggleSlot';
 import LearningUserMenuSlot from '../plugin-slots/LearningUserMenuSlot';
-import { CaretIcon } from '../Icons';
 
 import messages from './messages';
 
-const AuthenticatedUserDropdown = ({ intl, username, avatar, loading = false }) => {
+const AuthenticatedUserDropdown = ({
+  intl, username, avatar, loading = false,
+}) => {
   const dropdownItems = [
     {
       message: intl.formatMessage(messages.dashboard),
