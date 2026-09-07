@@ -1,0 +1,194 @@
+$spacer: 1rem;
+$blue: #007db8;
+$white: #fff;
+$component-active-bg: #0A3055FF !default;
+$component-active-color: $white !default;
+$rounded-pill: 50rem !default;
+
+@import './Menu/menu.scss';
+@import './studio-header/StudioHeader.scss';
+
+.dropdown-item a {
+  text-decoration: none;
+}
+
+.icon-button {
+  display: inline-flex;
+  line-height: 4rem;
+  background: transparent;
+  vertical-align: middle;
+  text-align: center;
+  border: none;
+  height: 4rem;
+  width: 4rem;
+  padding: .75rem;
+  justify-content: center;
+  align-items: center;
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, .1);
+  }
+}
+
+.site-header-mobile,
+.site-header-desktop {
+  position: relative;
+  z-index: 1000;
+}
+
+.site-header-mobile {
+  border-bottom: 1px solid #FFAF66;
+  background: var(--pgn-color-white, $white);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+
+  .nav-link {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .logo {
+    display: block !important;
+    position: relative !important;
+    margin-top: -0.1rem !important;
+    transform: translateY(-5px) !important;
+
+    img {
+      height: 2.5rem !important;
+      width: auto !important;
+      max-height: none !important;
+    }
+  }
+
+  // Fix for mobile hover state persisting
+  .icon-button {
+
+    &:active,
+    &:focus {
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    &.expanded {
+      background-color: #F2F4F6 !important;
+      border-radius: 12px;
+    }
+  }
+}
+
+
+.site-header-desktop {
+  border-bottom: 1px solid #FFAF66;
+  background: var(--pgn-color-white, $white);
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+
+
+  // Styling for avatar dropdown button
+  .border-0.bg-transparent {
+    border-radius: 20px;
+    transition: all 0.2s ease;
+
+    &:focus,
+    &:active {
+      outline: none !important;
+      border: none !important;
+    }
+
+    &:hover {
+      background-color: #F2F4F6 !important;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1) !important;
+      outline: none !important;
+      border: none !important;
+    }
+  }
+
+  .nav-link {
+    text-decoration: none;
+  }
+
+  .logo {
+    display: block !important;
+    box-sizing: content-box !important;
+    position: relative !important;
+    top: -1px !important;
+    margin-top: 0.1rem !important;
+    height: 3.03rem !important;
+    padding: calc(var(--pgn-spacing-spacer-base, $spacer) * 0.75) 0 !important;
+    // Add padding to the left of the logo
+    padding-left: calc(var(--pgn-spacing-spacer-base, $spacer) * 1.75) !important;
+    margin-right: var(--pgn-spacing-spacer-base, $spacer) !important;
+
+    img {
+      display: block;
+      height: 100% !important;
+    }
+  }
+
+  .secondary-menu-container {
+
+    .nav-link:hover,
+    .nav-link:focus,
+    .nav-link.active,
+    .expanded .nav-link {
+      background: transparent;
+      color: inherit;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: #FC8044;
+      }
+    }
+  }
+
+  .main-nav {
+    .nav-link {
+      padding: 1.43rem var(--pgn-spacing-spacer-base, $spacer);
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: .01em;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus,
+    .nav-link.active,
+    .expanded .nav-link {
+      background: transparent;
+      color: inherit;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 95%;
+        height: 3px;
+        background-color: #FC8044;
+      }
+    }
+
+    .menu {
+      position: static;
+
+      .menu-content {
+        border-top: solid 2px var(--pgn-color-bg-active);
+        left: 0;
+        right: 0;
+        box-shadow: var(--pgn-elevation-box-shadow-down-1, 0 1px 2px rgba(0, 0, 0, .25));
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
+        padding: var(--pgn-spacing-spacer-base, $spacer);
+      }
+    }
+  }
+
+  .search-input {
+    border-radius: var(--pgn-size-rounded-pill, $rounded-pill);
+  }
+}
