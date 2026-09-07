@@ -1,6 +1,6 @@
 import React from 'react';
 import { PluginSlot } from '@openedx/frontend-plugin-framework';
-import LearningHeaderUserMenuItems, { learningHeaderUserMenuDataShape } from '../../learning-header/LearningHeaderUserMenuItems';
+import UserMenuItems, { userMenuItemsDataShape } from '../../site-header/UserMenuItems';
 const LearningUserMenuSlot = _ref => {
   let {
     items
@@ -11,10 +11,16 @@ const LearningUserMenuSlot = _ref => {
     slotOptions: {
       mergeProps: true
     }
-  }, /*#__PURE__*/React.createElement(LearningHeaderUserMenuItems, {
-    items: items
+  }, /*#__PURE__*/React.createElement(UserMenuItems, {
+    menu: items,
+    leadingSeparator: true
   }));
 };
-LearningUserMenuSlot.propTypes = learningHeaderUserMenuDataShape;
+LearningUserMenuSlot.propTypes = {
+  items: userMenuItemsDataShape
+};
+LearningUserMenuSlot.defaultProps = {
+  items: []
+};
 export default LearningUserMenuSlot;
 //# sourceMappingURL=index.js.map

@@ -1,23 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 const renderMixedText = text => {
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
   const tibetanRegex = /[\u0F00-\u0FFF]+/g;
   const parts = [];
   let lastIndex = 0;
-  let match;
-  while ((match = tibetanRegex.exec(text)) !== null) {
+  let match = tibetanRegex.exec(text);
+  while (match !== null) {
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
-    parts.push(/*#__PURE__*/React.createElement("span", {
+    parts.push(
+    /*#__PURE__*/
+    // Styling lives in `@edx/brand/paragon/header` as `.course-title-tibetan`
+    // - see the comment there for why it's un-bolded and sized the way it is.
+    React.createElement("span", {
       key: match.index,
-      style: {
-        fontFamily: 'Jomolhari, serif',
-        fontSize: '1.15em'
-      }
+      className: "course-title-tibetan"
     }, match[0]));
     lastIndex = match.index + match[0].length;
+    match = tibetanRegex.exec(text);
   }
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
@@ -26,8 +30,6 @@ const renderMixedText = text => {
 };
 const LearningHeaderCourseInfo = _ref => {
   let {
-    courseOrg,
-    courseNumber,
     courseTitle
   } = _ref;
   return /*#__PURE__*/React.createElement("div", {
@@ -43,6 +45,8 @@ export const courseInfoDataShape = {
   courseNumber: PropTypes.string,
   courseTitle: PropTypes.string
 };
-LearningHeaderCourseInfo.propTypes = courseInfoDataShape;
+LearningHeaderCourseInfo.propTypes = {
+  courseTitle: courseInfoDataShape.courseTitle
+};
 export default LearningHeaderCourseInfo;
 //# sourceMappingURL=LearningHeaderCourseInfo.js.map

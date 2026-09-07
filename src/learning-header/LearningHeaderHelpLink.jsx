@@ -6,8 +6,15 @@ import messages from './messages';
 
 const LearningHeaderHelpLink = () => {
   const intl = useIntl();
+  const supportUrl = getConfig().SUPPORT_URL;
+
+  // No support URL configured means no link, rather than a styled control that goes nowhere.
+  if (!supportUrl) {
+    return null;
+  }
+
   return (
-    <a className="text-gray-700" href={`${getConfig().SUPPORT_URL}`}>{intl.formatMessage(messages.help)}</a>
+    <a className="nav-help" href={supportUrl}>{intl.formatMessage(messages.help)}</a>
   );
 };
 

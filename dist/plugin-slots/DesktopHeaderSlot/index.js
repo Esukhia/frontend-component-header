@@ -1,6 +1,6 @@
 import React from 'react';
 import { PluginSlot } from '@openedx/frontend-plugin-framework';
-import DesktopHeader, { desktopHeaderDataShape } from '../../desktop-header/DesktopHeader';
+import SiteHeader, { siteHeaderDataShape } from '../../site-header/SiteHeader';
 const DesktopHeaderSlot = _ref => {
   let {
     props
@@ -11,8 +11,8 @@ const DesktopHeaderSlot = _ref => {
     slotOptions: {
       mergeProps: true
     }
-  }, /*#__PURE__*/React.createElement(DesktopHeader, props));
+  }, /*#__PURE__*/React.createElement(SiteHeader, props));
 };
-DesktopHeaderSlot.propTypes = desktopHeaderDataShape;
+DesktopHeaderSlot.propTypes = siteHeaderDataShape;
 export default DesktopHeaderSlot;
 //# sourceMappingURL=index.js.map
