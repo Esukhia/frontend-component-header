@@ -65,7 +65,7 @@ describe('useReleaseNearFooter', () => {
     expect(result.current.instant).toBe(true);
   });
 
-  it('stops marking readings instant once the visitor actually scrolls', () => {
+  it('marks a reading non-instant only for the scroll/resize that caused it', () => {
     const { result } = renderHook(() => useReleaseNearFooter());
     expect(result.current.instant).toBe(true);
 
@@ -75,14 +75,15 @@ describe('useReleaseNearFooter', () => {
     });
     expect(result.current.instant).toBe(false);
 
-    // Stays non-instant for later readings too, since a scroll was already seen.
+    // A later reading caused only by a body resize (not a visitor action) is
+    // instant again, even though the visitor already scrolled once before.
     footer.getBoundingClientRect.mockReturnValue({ top: 400 });
     act(() => {
       MockResizeObserver.instances[0].callback();
       jest.runOnlyPendingTimers();
     });
     expect(result.current.inView).toBe(true);
-    expect(result.current.instant).toBe(false);
+    expect(result.current.instant).toBe(true);
   });
 
   it('recomputes on a body resize with no scroll or resize event - the loading-spinner-to-real-content case', () => {
