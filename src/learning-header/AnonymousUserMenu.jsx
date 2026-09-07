@@ -7,19 +7,34 @@ import LearningLoggedOutItemsSlot from '../plugin-slots/LearningLoggedOutItemsSl
 
 import genericMessages from '../generic/messages';
 
-const AnonymousUserMenu = () => {
+/**
+ * Register/sign-in items shared by the wide layout's buttons and the burger menu.
+ * A hook (not a plain function) because it needs `useIntl`.
+ */
+export const useLoggedOutItems = () => {
   const intl = useIntl();
-  const buttonsInfo = [
+
+  // Register comes first, matching the design; `variant` marks the primary action.
+  return [
     {
-      message: intl.formatMessage(genericMessages.registerSentenceCase),
+      type: 'item',
+      content: intl.formatMessage(genericMessages.registerSentenceCase),
       href: `${getConfig().LMS_BASE_URL}/register?next=${encodeURIComponent(global.location.href)}`,
+      iconName: 'register',
+      variant: 'register',
     },
     {
-      message: intl.formatMessage(genericMessages.signInSentenceCase),
+      type: 'item',
+      content: intl.formatMessage(genericMessages.signInSentenceCase),
       href: getLoginRedirectUrl(global.location.href),
-      variant: 'primary',
+      iconName: 'login',
+      variant: 'signin',
     },
   ];
+};
+
+const AnonymousUserMenu = () => {
+  const buttonsInfo = useLoggedOutItems();
 
   return <LearningLoggedOutItemsSlot buttonsInfo={buttonsInfo} />;
 };

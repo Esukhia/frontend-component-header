@@ -1,6 +1,6 @@
 import React from 'react';
 import { PluginSlot } from '@openedx/frontend-plugin-framework';
-import LearningLoggedOutButtons, { learningHeaderLoggedOutItemsDataShape } from '../../learning-header/LearningLoggedOutButtons';
+import SiteLoggedOutItems, { siteLoggedOutItemsDataShape } from '../../site-header/SiteLoggedOutItems';
 const LearningLoggedOutItemsSlot = ({
   buttonsInfo
 }) => /*#__PURE__*/React.createElement(PluginSlot, {
@@ -9,9 +9,14 @@ const LearningLoggedOutItemsSlot = ({
   slotOptions: {
     mergeProps: true
   }
-}, /*#__PURE__*/React.createElement(LearningLoggedOutButtons, {
-  buttonsInfo: buttonsInfo
+}, /*#__PURE__*/React.createElement(SiteLoggedOutItems, {
+  items: buttonsInfo
 }));
-LearningLoggedOutItemsSlot.propTypes = learningHeaderLoggedOutItemsDataShape;
+LearningLoggedOutItemsSlot.propTypes = {
+  buttonsInfo: siteLoggedOutItemsDataShape
+};
+LearningLoggedOutItemsSlot.defaultProps = {
+  buttonsInfo: []
+};
 export default LearningLoggedOutItemsSlot;
 //# sourceMappingURL=index.js.map

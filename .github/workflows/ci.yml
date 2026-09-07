@@ -36,4 +36,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
+        # No CODECOV_TOKEN is configured for this fork/org, so uploads always
+        # fail with "Token required - not valid tokenless upload" - that
+        # shouldn't block merges on an otherwise green build.
+        fail_ci_if_error: false

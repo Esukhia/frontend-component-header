@@ -4,19 +4,20 @@ import { getConfig } from '@edx/frontend-platform';
 import { Dropdown } from '@openedx/paragon';
 const LearningHeaderUserMenuItems = ({
   items
-}) => items.flatMap((item, index) => {
+}) => items.flatMap(item => {
   const isSignOut = item.href === getConfig().LOGOUT_URL;
+  const key = item.href || item.message;
   if (isSignOut) {
     return [/*#__PURE__*/React.createElement(Dropdown.Divider, {
-      key: `menu-divider-${index}`
+      key: `divider-${key}`
     }), /*#__PURE__*/React.createElement(Dropdown.Item, {
-      key: `menu-item-${index}`,
+      key: `item-${key}`,
       href: item.href,
       className: "sign-out-item"
     }, item.message)];
   }
   return /*#__PURE__*/React.createElement(Dropdown.Item, {
-    key: `menu-item-${index}`,
+    key: key,
     href: item.href
   }, item.message);
 });

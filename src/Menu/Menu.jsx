@@ -42,6 +42,12 @@ const menuPropTypes = {
   children: PropTypes.arrayOf(PropTypes.node).isRequired,
 };
 
+/**
+ * Lets anything rendered inside a Menu close it. Null when there is no Menu above,
+ * so a menu's contents stay usable on their own.
+ */
+const MenuContext = React.createContext(null);
+
 class Menu extends React.Component {
   constructor(props) {
     super(props);
@@ -57,6 +63,10 @@ class Menu extends React.Component {
     this.onDocumentClick = this.onDocumentClick.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
+
+    // Lets descendants close the menu without knowing it's there. Uses onCloseClick
+    // (not close) so focus returns to the trigger before the content unmounts.
+    this.contextValue = { close: this.onCloseClick };
   }
 
   // Lifecycle Events
@@ -250,14 +260,21 @@ class Menu extends React.Component {
 
     const rootClassName = this.state.expanded ? 'menu expanded' : 'menu';
 
-    return React.createElement(this.props.tag, {
-      className: `${rootClassName} ${className}`,
-      ref: this.menu,
-      onKeyDown: this.onKeyDown,
-      onMouseEnter: this.onMouseEnter,
-      onMouseLeave: this.onMouseLeave,
-      ...this.getAttributesFromProps(),
-    }, wrappedChildren);
+    return React.createElement(
+      this.props.tag,
+      {
+        className: `${rootClassName} ${className}`,
+        ref: this.menu,
+        onKeyDown: this.onKeyDown,
+        onMouseEnter: this.onMouseEnter,
+        onMouseLeave: this.onMouseLeave,
+        ...this.getAttributesFromProps(),
+      }, (
+        <MenuContext.Provider value={this.contextValue}>
+          {wrappedChildren}
+        </MenuContext.Provider>
+      ),
+    );
   }
 }
 
@@ -273,4 +290,6 @@ Menu.defaultProps = {
   transitionClassName: 'menu-content',
 };
 
-export { Menu, MenuTrigger, MenuContent };
+export {
+  Menu, MenuTrigger, MenuContent, MenuContext,
+};
