@@ -7,12 +7,8 @@ import LanguageOptions from './LanguageOptions';
 import messages from '../Header.messages';
 
 /**
- * The globe button and its language list. Shown on wide screens only; below the
- * collapse breakpoint the same options appear inside the burger menu instead.
- *
- * Menu supplies the open/close behaviour - outside click, Escape, arrow keys and
- * the aria-haspopup/aria-expanded wiring - and closing the other open menu, since
- * clicking this trigger counts as a click outside that one.
+ * Globe button and language list, shown on wide screens (the burger menu covers
+ * narrow ones). `Menu` handles open/close behaviour and a11y wiring.
  */
 const LanguageMenu = () => {
   const intl = useIntl();

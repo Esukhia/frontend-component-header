@@ -4,14 +4,9 @@ import PropTypes from 'prop-types';
 import { NavIcon } from './icons';
 
 /**
- * The navigation rows at the top of the burger menu. Receives the main and
- * secondary menus already merged, since below the collapse breakpoint they are
- * one list rather than two.
- *
- * Each row may carry an `iconName` hint, which `NavIcon` resolves to a glyph. It
- * is a name rather than a component so the applications supplying menu items need
- * no import from this package; an unknown or absent name renders no icon, which is
- * what the wide layout's plain text links rely on.
+ * Navigation rows at the top of the burger menu (main and secondary menus already
+ * merged). Each row's `iconName` is a string, not a component, so callers need no
+ * import from this package; an unknown/missing name just renders no icon.
  */
 const MobileNavItems = ({ menu }) => {
   // Consumers may hand us a ready-made node instead of a list of items.

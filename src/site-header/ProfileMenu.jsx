@@ -10,13 +10,8 @@ import getInitials from './utils';
 import messages from '../Header.messages';
 
 /**
- * The avatar button and account menu. Shown on wide screens only; the same rows
- * appear inside the burger menu below the collapse breakpoint.
- *
- * `renderItems` replaces how the rows themselves are drawn, leaving the trigger,
- * the identity block and all the menu wiring alone. The learning header uses it
- * to route the same rows through its own plugin slot; a caller that passes
- * nothing gets the default rows.
+ * Avatar button and account menu, shown above the collapse breakpoint. `renderItems`
+ * lets a caller (e.g. the learning header) route rows through its own plugin slot.
  */
 const ProfileMenu = ({
   menu, avatar, avatarLoading, username, name, email, renderItems,

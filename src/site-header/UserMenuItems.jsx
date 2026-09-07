@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { getConfig } from '@edx/frontend-platform';
 
 import { NavIcon } from './icons';
 
 /**
  * Flattens the grouped user menu into dropdown rows, putting a separator between
- * each group. Sign out is identified by its icon hint rather than its text, so the
- * distinct styling survives translation.
+ * each group. Sign out gets distinct styling, matched by icon hint or by href
+ * pointing at the logout URL (a consumer's menu item may omit the icon hint).
  */
 const UserMenuItems = ({ menu, leadingSeparator }) => menu.map((group, index) => (
   // eslint-disable-next-line react/no-array-index-key
@@ -18,7 +19,7 @@ const UserMenuItems = ({ menu, leadingSeparator }) => menu.map((group, index) =>
     }) => (
       <a
         key={`${iconName || 'item'}-${content}`}
-        className={`nav-menu-item${iconName === 'signout' ? ' nav-menu-signout' : ''}${disabled ? ' disabled' : ''}`}
+        className={`nav-menu-item${(iconName === 'signout' || href === getConfig().LOGOUT_URL) ? ' nav-menu-signout' : ''}${disabled ? ' disabled' : ''}`}
         role="menuitem"
         href={href}
         aria-current={isActive ? 'page' : undefined}

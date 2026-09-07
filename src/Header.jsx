@@ -32,17 +32,11 @@ subscribe(APP_CONFIG_INITIALIZED, () => {
 });
 
 /**
- * Header component for the application.
- * Displays a header with the provided main menu, secondary menu, and user menu when the user is authenticated.
- * If any of the props (mainMenuItems, secondaryMenuItems, userMenuItems) are not provided, default
- * items are displayed.
+ * Header component. Renders as a single bar at every screen width; the switch to a
+ * burger menu on narrow screens is done in CSS via `@edx/brand/paragon/header`, which
+ * an app must import.
  *
- * The header renders as a single bar at every screen width; the switch to a burger
- * menu on narrow screens is made in CSS, by `@edx/brand/paragon/header`. An
- * application must import that stylesheet for the header to look right.
- *
- * For more details on how to use this component, please refer to this document:
- * https://github.com/openedx/frontend-component-header/blob/master/docs/using_custom_header.rst
+ * See https://github.com/openedx/frontend-component-header/blob/master/docs/using_custom_header.rst
  *
  * @param {list} mainMenuItems - The list of main menu items to display.
  * See the documentation for the structure of main menu item.
@@ -70,10 +64,8 @@ const Header = ({
     },
   ];
 
-  // `iconName` picks the leading glyph for a row. It is a hint, not a component, so
-  // applications supplying their own menu items need no import from this package;
-  // an unknown or absent name simply renders no icon. Sign out is identified by it
-  // too, which keeps its distinct styling working in every language.
+  // `iconName` is a hint (not a component import) picking the row's icon; unknown/absent
+  // names just render none.
   const defaultUserMenu = authenticatedUser === null ? [] : [{
     heading: '',
     items: [
@@ -132,10 +124,7 @@ const Header = ({
     },
   ];
 
-  // The photo, name and email of the signed-in account: the bar shows the photo
-  // (or initials derived from the name), and the account menu shows the name and
-  // email together. Shared with the learning header, which renders the same
-  // account menu.
+  // Shared with the learning header, which renders the same account menu.
   const account = useAccount();
 
   const props = {
@@ -179,11 +168,8 @@ Header.propTypes = {
     PropTypes.node,
     PropTypes.array,
   ]),
-  // No defaultProps entry: this must stay `undefined`, not `null`, when unset. A
-  // prop object built with an explicit `footerSelector: null` still reaches
-  // SiteHeader as `null` when spread, and React only falls back to a component's
-  // own defaultProps for a genuinely `undefined` value - `null` would silently
-  // override SiteHeader's default of 'footer' and break footer detection outright.
+  // No defaultProps entry: must stay `undefined` when unset, since an explicit `null`
+  // would override SiteHeader's own 'footer' default and break footer detection.
   footerSelector: PropTypes.string,
   userMenuItems: PropTypes.arrayOf(PropTypes.shape({
     heading: PropTypes.string,

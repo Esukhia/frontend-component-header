@@ -12,29 +12,17 @@ import useReleaseNearFooter from './useReleaseNearFooter';
 import messages from '../Header.messages';
 
 /**
- * Is the visitor on the site's own landing page? Used only to underline the brand
- * lockup, so a missing window (server render, some test environments) simply means
- * "no marker" rather than an error.
+ * Whether the visitor is on the landing page, for underlining the brand lockup.
+ * Guards against SSR/tests where `window` is missing.
  */
 const isLandingPage = () => typeof window !== 'undefined' && window.location.pathname === '/';
 
 /**
- * The site header, in one component for every screen width.
- *
- * CSS decides what is visible: above the collapse breakpoint the navigation links,
- * locale button and profile avatar show and the burger is hidden; below it the
- * reverse. That means the breakpoint lives in `_header.scss` in the brand package,
- * and nothing here measures the window.
- *
- * Styling comes entirely from `@edx/brand/paragon/header`, which an application has
- * to import for this markup to look right.
- *
- * It also releases its own sticky position once the page's footer scrolls into
- * view, so it doesn't sit pinned on top of it - see `useReleaseNearFooter`. An
- * application doesn't need its own scroll-watching code for this; it's automatic
- * for any page that renders both this header and a footer matching `footerSelector`
- * (a plain `<footer>` tag by default). An application with more than one such
- * element on the page, or none at all, can pass a more specific `footerSelector`.
+ * The site header for every screen width; CSS (in `_header.scss`) decides what's
+ * visible at each breakpoint, not JS. Styling requires importing
+ * `@edx/brand/paragon/header`. It also un-sticks itself as the page footer scrolls
+ * into view (see `useReleaseNearFooter`); pass `footerSelector` if the default
+ * `footer` selector doesn't uniquely match.
  */
 const SiteHeader = ({
   logo,
@@ -56,12 +44,8 @@ const SiteHeader = ({
   const intl = useIntl();
   const { inView: footerInView, instant: releaseInstantly } = useReleaseNearFooter(footerSelector);
 
-  // The burger menu shows one merged list, so it needs the two menus concatenated
-  // rather than passed through separately as the wide layout does. Each is checked
-  // on its own: a consumer may hand us a ready-made node instead of a list, and a
-  // node cannot be merged into an array - but that should only cost the burger menu
-  // the menu that is a node, not the other one as well. The wide layout renders
-  // either form, since each slot passes a node straight through.
+  // Burger menu needs one merged list; skip either menu that's a node rather than
+  // an array (only that one is dropped, not both).
   const navItems = [
     ...(Array.isArray(mainMenu) ? mainMenu : []),
     ...(Array.isArray(secondaryMenu) ? secondaryMenu : []),
@@ -76,9 +60,7 @@ const SiteHeader = ({
   const headerClassName = [
     'site-nav',
     footerInView && 'header-releases-sticky',
-    // See useReleaseNearFooter: skips the slide animation for a release that
-    // isn't the visitor's own scrolling, so an early misreading correcting
-    // itself doesn't look like the header sliding in on page load.
+    // Skip the slide animation when the release wasn't caused by user scrolling.
     releaseInstantly && 'header-releases-sticky-instant',
   ].filter(Boolean).join(' ');
 
@@ -120,11 +102,7 @@ const SiteHeader = ({
             email={email}
           />
         ) : <SiteLoggedOutItems items={loggedOutItems} />}
-        {/*
-          Last, not first: below the collapse breakpoint everything else in
-          this row is display:none, so the burger ends up the only visible
-          control - on the right, where .nav-actions already sits.
-        */}
+        {/* Last, so it's the only visible control once other actions collapse. */}
         <MobileNavMenu
           navItems={navItems}
           userMenu={userMenu}

@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import ProfileAvatar from './ProfileAvatar';
 
 /**
- * The non-interactive name and email row at the top of the account menu. Both
- * lines truncate rather than wrap, so a long address cannot stretch the shell.
+ * Non-interactive name/email row at the top of the account menu; both lines
+ * truncate instead of wrapping.
  */
 const ProfileIdentity = ({
   name, email, username, avatar, avatarLoading, initials,

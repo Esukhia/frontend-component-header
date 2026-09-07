@@ -7,13 +7,9 @@ import useLanguageSelection from './useLanguageSelection';
 import messages from '../Header.messages';
 
 /**
- * The heading plus the list of language rows. Defined once and rendered in two places -
- * the globe menu on wide screens, and inside the burger menu on narrow ones - so the two
- * lists can never drift apart.
- *
- * Takes no props deliberately: the two parents have quite different shapes, and reading
- * the languages, the current one and the signed-in user from the app's own context is
- * what keeps both of them free of language plumbing.
+ * Heading plus language rows, shared by the wide-screen globe menu and the mobile
+ * burger menu so the two never drift apart. Takes no props; reads everything it
+ * needs from context so both parents stay free of language plumbing.
  */
 const LanguageOptions = () => {
   const intl = useIntl();

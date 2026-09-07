@@ -8,17 +8,13 @@ import LearningLoggedOutItemsSlot from '../plugin-slots/LearningLoggedOutItemsSl
 import genericMessages from '../generic/messages';
 
 /**
- * The register/sign-in items, in the shape both the wide layout's buttons and
- * the burger menu's rows expect. A hook rather than a plain function since it
- * needs `useIntl`; called independently by each renderer rather than computed
- * once and threaded through as a prop, since it's cheap, pure, and this keeps
- * `AnonymousUserMenu` prop-free for its one existing caller.
+ * Register/sign-in items shared by the wide layout's buttons and the burger menu.
+ * A hook (not a plain function) because it needs `useIntl`.
  */
 export const useLoggedOutItems = () => {
   const intl = useIntl();
 
-  // Register comes first and sign in second, matching the design. `variant` says
-  // which is the primary action rather than relying on that order.
+  // Register comes first, matching the design; `variant` marks the primary action.
   return [
     {
       type: 'item',

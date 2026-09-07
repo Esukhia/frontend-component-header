@@ -12,12 +12,9 @@ import { matchActiveLanguage, readLanguageCookie, resolveHeaderLanguages } from 
 import { patchLanguagePreference, postSetLang } from './service';
 
 /**
- * The language list, which one is current, and how to change it.
- *
- * Switching does not reload the page: AppProvider listens for LOCALE_CHANGED and swaps
- * the locale on its IntlProvider, so publishing the event re-renders the app in the new
- * language. This mirrors what frontend-app-account does when its settings form saves.
- *
+ * The language list, which one is current, and how to change it. Switching doesn't
+ * reload the page: publishing LOCALE_CHANGED makes AppProvider swap the IntlProvider's
+ * locale in place.
  * @param {object} [options]
  * @param {Function} [options.onSwitched] called once the language has actually changed
  */
@@ -26,7 +23,7 @@ const useLanguageSelection = ({ onSwitched } = {}) => {
   const { authenticatedUser } = useContext(AppContext);
   const [selectedCode, setSelectedCode] = useState(null);
   const [pendingCode, setPendingCode] = useState(null);
-  // A ref alongside the state: two clicks in the same tick would both read the old state.
+  // Ref, not state: avoids two clicks in the same tick both reading stale state.
   const inFlight = useRef(false);
 
   const { RELEASED_LANGUAGES, LANGUAGE_PREFERENCE_COOKIE_NAME } = getConfig();
@@ -36,9 +33,7 @@ const useLanguageSelection = ({ onSwitched } = {}) => {
     [RELEASED_LANGUAGES],
   );
 
-  // The cookie is the visitor's stated preference; intl.locale is the best signal we
-  // have before they have ever expressed one. selectedCode wins over both so the tick
-  // moves the moment a switch succeeds, without waiting to observe the new cookie.
+  // selectedCode wins so the tick moves immediately on switch, without waiting on the cookie.
   const activeCode = selectedCode ?? matchActiveLanguage(
     readLanguageCookie(LANGUAGE_PREFERENCE_COOKIE_NAME) || intl.locale,
     languages,
@@ -61,8 +56,7 @@ const useLanguageSelection = ({ onSwitched } = {}) => {
         try {
           await patchLanguagePreference(authenticatedUser.username, code);
         } catch (error) {
-          // Losing the cross-device preference is not a reason to refuse the visitor the
-          // language they just asked for in this browser.
+          // Don't block the local switch just because the cross-device save failed.
           logError(error);
         }
       }
@@ -70,14 +64,12 @@ const useLanguageSelection = ({ onSwitched } = {}) => {
       await postSetLang(code);
 
       setSelectedCode(code);
-      // getLocale() rather than the raw code: it reports what will actually render,
-      // which may fall back to English where this app has no messages for the locale.
+      // getLocale() reports what will actually render (may fall back to English).
       publish(LOCALE_CHANGED, getLocale());
       handleRtl();
       if (onSwitched) { onSwitched(); }
     } catch (error) {
-      // The switch failed, so nothing is published and nothing moves - the menu stays
-      // open on the current language and the visitor can try again.
+      // Leave the menu on the current language so the visitor can retry.
       logError(error);
     } finally {
       inFlight.current = false;

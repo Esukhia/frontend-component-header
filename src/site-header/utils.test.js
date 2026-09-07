@@ -29,8 +29,7 @@ describe('getInitials', () => {
     expect(getInitials('  Tenzin   Dorjee  ', 'tenzin')).toBe('TD');
   });
 
-  // A single Tibetan or Chinese glyph does not read as an initial, so the caller
-  // shows a generic person icon instead.
+  // Non-Latin glyphs don't read as initials; caller shows a generic icon instead.
   it('returns null for a name in a non-Latin script', () => {
     expect(getInitials('བསོད་ནམས', 'sonam')).toBeNull();
     expect(getInitials('王小明', 'wang')).toBeNull();
