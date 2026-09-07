@@ -27,9 +27,10 @@ const Configuration = {
     //    Revert "introduce a bug" (#1234)
     message => /^Revert ".*"( \(#\d+\))?/.test(message),
 
-    // Pre-existing commit from before this repo enforced conventional commits;
-    // rewording it would mean rewriting and force-pushing published history.
+    // Pre-existing commits from before this repo enforced conventional commits;
+    // rewording them would mean rewriting and force-pushing published history.
     message => message.startsWith('Update header for v8'),
+    message => message.startsWith('added dist'),
 
     // BTW: commitlint has a built-in list of ignores which are also applied.
     // Those include the typical "Merged" messages, so those are implicitly ignored:
