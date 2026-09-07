@@ -25,6 +25,8 @@ const useReleaseNearFooter = (footerSelectorProp) => {
     // Reset each flush; a real interaction (false) beats an instant one (true)
     // scheduled in the same frame.
     let pendingInstant = true;
+    // Once the visitor has interacted, every later reading stays non-instant.
+    let hasUserInteracted = false;
 
     const checkFooterVisibility = (instant) => {
       const inView = !!footerNode && footerNode.getBoundingClientRect().top < window.innerHeight;
@@ -36,7 +38,7 @@ const useReleaseNearFooter = (footerSelectorProp) => {
 
     const flush = () => {
       ticking = false;
-      const instant = pendingInstant;
+      const instant = hasUserInteracted ? false : pendingInstant;
       pendingInstant = true;
       checkFooterVisibility(instant);
     };
@@ -51,7 +53,10 @@ const useReleaseNearFooter = (footerSelectorProp) => {
       }
     };
 
-    const onUserInteraction = () => scheduleCheck(false);
+    const onUserInteraction = () => {
+      hasUserInteracted = true;
+      scheduleCheck(false);
+    };
 
     const findInNode = (node) => {
       if (node.nodeType !== Node.ELEMENT_NODE) {
