@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const renderMixedText = (text) => {
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
 
   const tibetanRegex = /[\u0F00-\u0FFF]+/g;
   const parts = [];
   let lastIndex = 0;
-  let match;
+  let match = tibetanRegex.exec(text);
 
-  while ((match = tibetanRegex.exec(text)) !== null) {
+  while (match !== null) {
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
@@ -18,9 +20,10 @@ const renderMixedText = (text) => {
       // - see the comment there for why it's un-bolded and sized the way it is.
       <span key={match.index} className="course-title-tibetan">
         {match[0]}
-      </span>
+      </span>,
     );
     lastIndex = match.index + match[0].length;
+    match = tibetanRegex.exec(text);
   }
 
   if (lastIndex < text.length) {
@@ -30,19 +33,13 @@ const renderMixedText = (text) => {
   return parts.length > 0 ? parts : text;
 };
 
-const LearningHeaderCourseInfo = ({
-  courseOrg,
-  courseNumber,
-  courseTitle,
-}) => {
-  return (
-    <div style={{ minWidth: 0 }}>
-      <span className="d-block m-0 font-weight-bold course-title">
-        {renderMixedText(courseTitle)}
-      </span>
-    </div>
-  );
-};
+const LearningHeaderCourseInfo = ({ courseTitle }) => (
+  <div style={{ minWidth: 0 }}>
+    <span className="d-block m-0 font-weight-bold course-title">
+      {renderMixedText(courseTitle)}
+    </span>
+  </div>
+);
 
 export const courseInfoDataShape = {
   courseOrg: PropTypes.string,
@@ -50,6 +47,8 @@ export const courseInfoDataShape = {
   courseTitle: PropTypes.string,
 };
 
-LearningHeaderCourseInfo.propTypes = courseInfoDataShape;
+LearningHeaderCourseInfo.propTypes = {
+  courseTitle: courseInfoDataShape.courseTitle,
+};
 
 export default LearningHeaderCourseInfo;
