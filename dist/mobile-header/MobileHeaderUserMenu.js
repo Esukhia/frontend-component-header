@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 const MobileHeaderUserMenu = ({
   menu
-}) => menu.map((group, index) => /*#__PURE__*/React.createElement(React.Fragment, {
+}) => menu.map((group, index) =>
+/*#__PURE__*/
+// eslint-disable-next-line react/no-array-index-key
+React.createElement(React.Fragment, {
   key: index
 }, group.items.map(({
   type,
