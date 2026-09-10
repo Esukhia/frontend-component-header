@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 /**
  * Whether the page's footer is in view, and whether that change should animate.
- * The header is `position: sticky`; it releases once the footer scrolls into
- * view so it doesn't sit pinned on top of it. `instant` is true for a release
- * caused by anything other than the visitor's own scroll/resize (e.g. content
- * loading in and pushing the footer around), so that correction doesn't look
- * like the header sliding in for no reason.
+ * The header is `position: sticky`; it releases once the visitor scrolls the
+ * footer into view so it doesn't sit pinned on top of it. `instant` is true for
+ * a release caused by anything other than the visitor's own scroll/resize (e.g.
+ * content loading in and pushing the footer around), so that correction doesn't
+ * look like the header sliding in for no reason.
  */
 const useReleaseNearFooter = (footerSelectorProp) => {
   // '' also needs the fallback: the plugin framework can pass it, and
@@ -27,7 +27,13 @@ const useReleaseNearFooter = (footerSelectorProp) => {
     let pendingInstant = true;
 
     const checkFooterVisibility = (instant) => {
-      const inView = !!footerNode && footerNode.getBoundingClientRect().top < window.innerHeight;
+      // The page having been scrolled down is part of the question, not just
+      // whether the footer is on screen. A page too short to scroll shows its
+      // footer from the first paint; releasing there would hide the header
+      // immediately and for good, since no scrolling exists to bring it back.
+      const inView = !!footerNode
+        && window.scrollY > 0
+        && footerNode.getBoundingClientRect().top < window.innerHeight;
       // Return the previous object when unchanged so setState can bail out.
       setState((previous) => (
         (previous.inView === inView && previous.instant === instant) ? previous : { inView, instant }
