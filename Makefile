@@ -9,7 +9,7 @@ build:
 	rm -rf ./dist
 	./node_modules/.bin/fedx-scripts babel src --out-dir dist --source-maps \
 	  --extensions ".js,.jsx,.ts,.tsx" \
-	  --ignore "**/*.test.jsx,**/*.test.tsx,**/__mocks__,**/__snapshots__,**/setupTest.js" \
+	  --ignore "**/*.test.js,**/*.test.jsx,**/*.test.tsx,**/__mocks__,**/__snapshots__,**/setupTest.js" \
 	  --copy-files --no-copy-ignored
 	@# --copy-files will bring in everything else that wasn't processed by babel. Remove what we don't want.
 	@rm -rf dist/**/*.test.jsx
